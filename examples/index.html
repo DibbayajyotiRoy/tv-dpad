@@ -1,0 +1,41 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>tv-dpad demo</title>
+<style>
+  body { font: 18px system-ui; background: #111; color: #eee; margin: 24px; }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 16px 0; }
+  button, input { font: inherit; padding: 18px; border: 0; border-radius: 8px; background: #2a2a2a; color: inherit; }
+  .wide { grid-column: 1 / -1; }
+  :focus { outline: 4px solid #4da3ff; outline-offset: 2px; }
+  #modal { position: fixed; inset: 20% 30%; background: #333; padding: 24px; border-radius: 12px; display: none; }
+  #modal.open { display: block; }
+</style>
+<h1>tv-dpad</h1>
+<p>Arrow keys move focus. Escape / Backspace = back. Run <code>npm run build</code> first.</p>
+<p id="log">Back: not pressed yet</p>
+<div class="grid">
+  <button>1</button><button>2</button><button>3</button><button>4</button>
+  <button>5</button><button>6</button><button>7</button><button>8</button>
+  <input class="wide" placeholder="Text input: arrows leave only at the caret edge">
+  <button class="wide" id="open">Open modal (focus is trapped inside)</button>
+  <button>9</button><button>10</button><button>11</button><button>12</button>
+</div>
+<div id="modal" data-modal role="dialog" aria-label="Modal">
+  <p>Focus stays in here. Press Escape to close.</p>
+  <button>Yes</button> <button>No</button>
+</div>
+
+<!-- Classic script (not a module) so it works from file:// -->
+<script src="../dist/index.global.js"></script>
+<script>
+  const modal = document.getElementById('modal'), log = document.getElementById('log');
+  createDpad(document, {
+    onBack() {
+      log.textContent = 'Back pressed';
+      if (modal.classList.contains('open')) { modal.classList.remove('open'); document.getElementById('open').focus(); }
+    },
+  });
+  document.getElementById('open').onclick = () => { modal.classList.add('open'); modal.querySelector('button').focus(); };
+  document.querySelector('button').focus();
+</script>
